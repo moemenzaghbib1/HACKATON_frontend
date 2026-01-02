@@ -1,59 +1,159 @@
-# HACKATONFRONTEND
+# 🎨 Hackathon Frontend --- Orders Dashboard (Angular + Material)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
+A modern, clean, and production‑ready **Angular frontend** for managing
+orders.
 
-## Development server
+It connects to the backend API and provides:
 
-To start a local development server, run:
+-   ✔️ Order listing
+-   ✔️ Pagination
+-   ✔️ Create order dialog (toast-style modal)
+-   ✔️ Status management (Pay / Cancel)
+-   ✔️ Loading spinners + notifications
+-   ✔️ Clean architecture with reusable services
 
-```bash
-ng serve
+This project focuses on **clarity, UX, and maintainability**.
+
+------------------------------------------------------------------------
+
+## 🏗️ Architecture Overview
+
+The app uses **Angular Standalone Components** (no heavy modules).
+
+    src/app
+     ├── core/
+     │    └── services/
+     │         └── order.ts      # HTTP API layer
+     │
+     ├── orders/
+     │    ├── create-order/      # Dialog used to create orders
+     │    └── orders-list/       # Main dashboard list
+     │
+     ├── material/               # Centralized Angular Material imports
+     └── app.routes.ts           # Routing configuration
+
+### Key Concepts
+
+Layer                        Responsibility
+  ---------------------------- -------------------------
+**Service (OrderService)**   Encapsulates API calls
+**UI Components**            Display and interaction
+**Dialogs**                  Creation workflow
+**Material Theme**           Consistent UI
+**Standalone Components**    Lightweight & modular
+
+------------------------------------------------------------------------
+
+## 🚀 Installation & Run
+
+### 1️⃣ Install dependencies
+
+    npm install
+
+### 2️⃣ Configure API Endpoint
+
+Edit:
+
+    src/environments/environment.ts
+
+Example:
+
+``` ts
+export const environment = {
+  apiUrl: 'http://localhost:8080'
+};
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### 3️⃣ Run the app
 
-## Code scaffolding
+    npm start
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The app runs at:
 
-```bash
-ng generate component component-name
+👉 http://localhost:4200
+
+------------------------------------------------------------------------
+
+## 🌍 Features Walkthrough
+
+### ✔ View Orders
+
+The dashboard loads orders with:
+
+-   Pagination
+-   Loading indicator
+-   Auto-refresh after actions
+
+### ✔ Create Order
+
+Click **Create Order** → dialog opens
+
+-   Add multiple items dynamically
+-   Submit order
+-   Toast confirms success
+
+### ✔ Change Status
+
+Inside the table:
+
+-   **Pay** --- sets status to PAID
+-   **Cancel** --- sets status to CANCELLED
+-   Buttons disable based on state
+
+------------------------------------------------------------------------
+
+## 🧪 Testing
+
+### Unit Tests
+
+    ng test
+
+### E2E (if configured)
+
+    ng e2e
+
+Recommended tools:
+
+-   Cypress (UI flow testing)
+-   Jasmine/Karma (unit)
+
+------------------------------------------------------------------------
+
+## 🎨 UI & Libraries
+
+We use:
+
+-   **Angular Material**
+-   **Reactive Forms**
+-   **MatDialog (modals)**
+-   **MatSnackBar (notifications)**
+-   **MatPaginator (pagination)**
+
+Design principles:
+
+✔ minimal\
+✔ consistent spacing\
+✔ responsive layout
+
+------------------------------------------------------------------------
+
+## 🔌 API Contract
+
+The app expects the backend to expose:
+
+    GET /orders
+    POST /orders
+    PATCH /orders/{id}/status
+
+Payload example:
+
+``` json
+{
+  "customerName": "John",
+  "items": [
+    { "productId": "p1", "quantity": 2 }
+  ]
+}
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+------------------------------------------------------------------------

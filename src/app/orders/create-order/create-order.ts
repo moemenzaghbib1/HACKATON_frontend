@@ -1,37 +1,61 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import {CreateOrderRequest, OrderService} from '../../core/services/order';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { NgFor, NgIf } from '@angular/common';
+import {materialModules} from '../../material';
 
 @Component({
+  standalone: true,
   selector: 'app-create-order',
   templateUrl: './create-order.html',
-  imports: [CommonModule, FormsModule]
+  imports: [
+    NgFor,
+    NgIf,
+    materialModules,
+    ReactiveFormsModule,
+  ]
 })
 export class CreateOrderComponent {
 
-  model: CreateOrderRequest = {
-    customerName: '',
-    items: [
-      { productId: '', quantity: 1 }
-    ]
-  };
+  form!: FormGroup;
 
-  constructor(private service: OrderService,
-              private router: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<CreateOrderComponent>
+  ) {
+    this.form = this.fb.group({
+      customerName: ['', Validators.required],
+      items: this.fb.array([
+        this.buildItem()
+      ])
+    });
+  }
+
+  get items(): FormArray {
+    return this.form.get('items') as FormArray;
+  }
+
+  buildItem(): FormGroup {
+    return this.fb.group({
+      productId: ['', Validators.required],
+      quantity: [1, [Validators.required, Validators.min(1)]]
+    });
+  }
 
   addItem() {
-    this.model.items.push({ productId: '', quantity: 1 });
+    this.items.push(this.buildItem());
   }
 
   removeItem(i: number) {
-    this.model.items.splice(i, 1);
+    this.items.removeAt(i);
   }
 
   submit() {
-    this.service.create(this.model).subscribe(() => {
-      this.router.navigate(['/orders']);
-    });
+    if (this.form.invalid) return;
+    this.dialogRef.close(this.form.value);
+  }
+
+  close() {
+    this.dialogRef.close(null);
   }
 }
