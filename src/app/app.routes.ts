@@ -11,7 +11,7 @@ export const routes: Routes = [
   },
 
   {
-    path: 'orders/new',
+    path: 'orders/create',
     loadComponent: () =>
       import('./orders/create-order/create-order')
         .then(c => c.CreateOrderComponent)
