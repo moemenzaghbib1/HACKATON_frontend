@@ -14,6 +14,12 @@ export interface Order {
   items: OrderItem[];
   status: 'CREATED' | 'PAID' | 'CANCELLED';
 }
+export interface Page<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+}
 
 export interface CreateOrderRequest {
   customerName: string;
@@ -29,9 +35,13 @@ export class OrderService {
 
   constructor(private http: HttpClient) {}
 
-  list(): Observable<Order[]> {
-    return this.http.get<Order[]>(this.base);
+  list(page = 0, size = 5): Observable<Page<Order>> {
+    return this.http.get<Page<Order>>(`${this.base}`, {
+      params: { page, size }
+    });
   }
+
+
 
   create(data: CreateOrderRequest): Observable<Order> {
     return this.http.post<Order>(this.base, data);
