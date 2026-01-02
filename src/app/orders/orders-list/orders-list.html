@@ -74,11 +74,13 @@
     </table>
 
     <mat-paginator
-      [length]="orders.length"
+      [length]="orders.totalElements"
+      [pageIndex]="pageIndex"
       [pageSize]="pageSize"
       [pageSizeOptions]="[5,10,20]"
       (page)="onPage($event)">
     </mat-paginator>
+
 
   }
 

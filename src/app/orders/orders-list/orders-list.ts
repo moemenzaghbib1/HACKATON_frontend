@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 
-import { OrderService, Order } from '../../core/services/order';
+import {OrderService, Order, Page} from '../../core/services/order';
 import { materialModules } from '../../material';
 import { CreateOrderComponent } from '../create-order/create-order';
 import {NgClass} from '@angular/common';
@@ -18,7 +18,7 @@ export class OrdersListComponent implements OnInit {
 
   displayedColumns = ['customer', 'status', 'items', 'actions'];
 
-  orders: Order[] = [];
+  orders!: Page<Order>;
   paged: Order[] = [];
 
   loading = true;
@@ -43,13 +43,12 @@ export class OrdersListComponent implements OnInit {
   load() {
     this.loading = true;
 
-    this.api.list().subscribe({
-      next: data => {
-        this.orders = data;
-        this.applyPage();
+    this.api.list(this.pageIndex, this.pageSize).subscribe({
+      next: page => {
+        this.orders = page;
+        this.paged = page.content;
         this.loading = false;
-        this.cdr.detectChanges();   // 👈 force UI refresh
-
+        this.cdr.detectChanges();
       },
       error: () => {
         this.snack.open('Could not load orders', 'Close', { duration: 3000 });
@@ -58,16 +57,12 @@ export class OrdersListComponent implements OnInit {
     });
   }
 
-  applyPage() {
-    const start = this.pageIndex * this.pageSize;
-    this.paged = this.orders.slice(start, start + this.pageSize);
-  }
-
   onPage(e: PageEvent) {
     this.pageIndex = e.pageIndex;
     this.pageSize = e.pageSize;
-    this.applyPage();
+    this.load();          // 👈 request next page from backend
   }
+
 
   markPaid(o: Order) {
     this.api.changeStatus(o.id, 'PAID').subscribe(() => {
