@@ -1,0 +1,63 @@
+<div class="container">
+
+  <h2>Orders</h2>
+
+  <a routerLink="/orders/create" class="btn btn-primary mb-3">
+    + Create Order
+  </a>
+
+  @if (loading) {
+    <div>Loading…</div>
+  }
+
+  @if (orders.length && !loading) {
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Status</th>
+        <th>Items</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+
+      <tbody>
+        @for (o of orders; track o.id) {
+          <tr>
+            <td>{{ o.customerName }}</td>
+            <td>{{ o.status }}</td>
+
+            <td>
+              <ul>
+                @for (i of o.items; track i.productId) {
+                  <li>{{ i.productId }} — {{ i.quantity }}</li>
+                }
+              </ul>
+            </td>
+
+            <td>
+              <button
+                class="btn btn-success btn-sm me-2"
+                (click)="markPaid(o)"
+                [disabled]="o.status !== 'CREATED'">
+                Mark Paid
+              </button>
+
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="cancel(o)"
+                [disabled]="o.status === 'PAID'">
+                Cancel
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (!orders.length && !loading) {
+    <p>No orders yet.</p>
+  }
+
+</div>

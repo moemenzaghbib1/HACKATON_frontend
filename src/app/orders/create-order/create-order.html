@@ -1,0 +1,52 @@
+<div class="container">
+  <h2>Create Order</h2>
+
+  <form (ngSubmit)="submit()">
+
+    <div class="mb-3">
+      <label>Customer Name</label>
+      <input class="form-control"
+             [(ngModel)]="model.customerName"
+             name="customerName"
+             required />
+    </div>
+
+    <h4>Items</h4>
+
+    <div *ngFor="let item of model.items; let i=index" class="row mb-2">
+      <div class="col">
+        <input class="form-control"
+               placeholder="Product ID"
+               [(ngModel)]="item.productId"
+               name="product-{{i}}" />
+      </div>
+
+      <div class="col">
+        <input type="number"
+               class="form-control"
+               [(ngModel)]="item.quantity"
+               name="qty-{{i}}" />
+      </div>
+
+      <div class="col-auto">
+        <button type="button"
+                class="btn btn-danger"
+                (click)="removeItem(i)"
+                *ngIf="model.items.length > 1">
+          X
+        </button>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-secondary mb-3" (click)="addItem()">
+      + Add Item
+    </button>
+
+    <br />
+
+    <button class="btn btn-primary" type="submit">
+      Save
+    </button>
+
+  </form>
+</div>
